@@ -1,0 +1,44 @@
+# Accobiz stock item rules - software-independent (fixed logic).
+# Editable values (unit, ledger links, GST TDS HSNs + rate, TCS keywords + rate) live in
+# stock_settings.yaml and are changed from the Settings screen in the app.
+# Values must be EXACT strings from the Accobiz stock template Options sheet.
+
+# ---------- type: Goods / Service ----------
+# Evaluated top to bottom, first match wins.
+item_type:
+  - id: sac_code
+    result: Service
+    when: "HSN/SAC code starts with 99 (SAC = services)"
+    match: { hsn_prefix: ["99"] }
+
+  - id: hsn_code
+    result: Goods
+    when: "valid goods HSN code present (chapters 01-98)"
+    match: { hsn_present: true }
+
+  - id: service_name
+    result: Service
+    when: "description sounds like a service"
+    match:
+      name_keywords: [service, services, charges, charge, "job work", jobwork, labour, labor,
+                      freight, cartage, transport, transportation, repair, repairs, maintenance,
+                      amc, installation, erection, commissioning, testing, inspection,
+                      calibration, consultancy, consulting, professional, fee, fees, rent,
+                      hire, hiring, commission, brokerage, training, design, software,
+                      subscription, license, licence, insurance, courier, packing charges,
+                      loading, unloading, contract, manpower, security, cleaning]
+
+  - id: default
+    result: Goods
+    when: "otherwise - stock items are physical goods by default"
+    match: default
+# Later: AI reviews names that fell to "default" and may suggest Service with a reason.
+
+# ---------- gsttype ----------
+gst_type:
+  zero_rate: NIL          # gstrate == 0
+  otherwise: REGULAR
+
+# GST TDS: HSN starts with a prefix in stock_settings.gst_tds -> Yes + rate; else No, rate blank.
+# TCS:     description contains a word in stock_settings.tcs     -> Yes + rate; else No, rate blank.
+# Always blank (user decision): cessrate, openingqty, openingvalue, batchno, expirydate

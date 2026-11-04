@@ -1,0 +1,43 @@
+# Shakun -> Accobiz : Stock Accounts
+# Source of truth: Stock Matching.xlsx (Sheet1), confirmed by user.
+
+id: shakun.stock.default
+software: Shakun
+data_type: stock
+variant: default
+target: accobiz.stock             # templates/accobiz/stock-accounts.xlsx
+
+layout:
+  sheet: STKSUM
+  header_row: 6                   # rows 1-5 = company name/address + "STOCK MASTER PRINTING"
+  data_start_row: 7
+  match_by: position
+  stop_at_blank_rows: 3           # row count is variable; never hard-code a range
+
+fingerprint:
+  title_contains: "STOCK MASTER PRINTING"
+  headers: { A: "A/c Code", B: "Account Name", F: "GST @", G: "HSN" }
+
+columns:                          # Shakun column -> Accobiz field
+  A: { header: "A/c Code",     to: code,         transform: [int_to_text] }
+  B: { header: "Account Name", to: description,  transform: [] }          # copied exactly as-is
+  C: { header: "M.R.P",        to: mrp,          transform: [decimal_2] }  # 0.0 -> "0.00"
+  D: { header: "Pur.Rate",     to: purchaserate, transform: [decimal_2] }
+  E: { header: "Sale Rate",    to: salerate,     transform: [decimal_2] }
+  F: { header: "GST @",        to: gstrate,      transform: [int_to_text] } # written as number
+  G: { header: "HSN",          to: hsn,          transform: [int_to_text] } # 7601.0 -> "7601"; blank HSN -> left blank, no warning (optional field)
+
+unmapped:                         # present in Shakun, not converted
+  H: "Value"
+  I: ""
+  J: ""                           # TRUE/FALSE flag
+  K: ""
+  L: ""
+  M: ""
+  N: ""
+  O: ""
+  P: ""
+
+# Remaining Accobiz columns (type, unit, cessrate, openingqty, openingvalue, batchno,
+# expirydate, gsttype, gsttdsapplicable, gsttdsrate, tcsapplicable, tcsrate,
+# purchaseaccount, salesaccount): rules pending - to be discussed.

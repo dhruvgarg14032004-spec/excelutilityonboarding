@@ -1,0 +1,44 @@
+# Shakun Trial Balance -> opening balances for Accobiz ledgers
+# Companion file to profiles/shakun/ledger.yaml (uploaded together, optional).
+
+id: shakun.trial_balance.default
+software: Shakun
+data_type: ledger_balances
+feeds: shakun.ledger.default
+
+layout:
+  sheet: TRIAL                    # other sheets (Sheet2, Sheet3, TRIALDC) are ignored
+  header_row: 1
+  data_start_row: 2
+  match_by: header
+
+fingerprint:
+  headers: { A: "A/c Code", C: "Debit", D: "Credit" }
+
+columns:                          # ONLY these three are used (per user)
+  A: { header: "A/c Code", role: ledger_name }   # despite the header, holds the ledger NAME
+  C: { header: "Debit",    role: debit }
+  D: { header: "Credit",   role: credit }
+
+row_types:                        # Shakun TB is grouped; rows are classified as:
+  group_header: "A filled, C and D blank"        # e.g. "SUNDRY CREDITORS" - not a ledger
+  ledger:       "A filled, C or D filled"
+  subtotal:     "A blank, C or D filled"         # skipped
+  grand_total:  "A == 'TOTAL'"                   # used only as a control check
+
+matching:
+  key: "ledger name (ledger file column B) - exact, then case/space-insensitive"
+  unmatched_tb_ledger: error      # TB has a ledger not present in the ledger file
+  ledger_without_tb_row: zero     # openingbalance "0.00", balancetype blank
+
+# Result (implemented in app/engine/ledger.py):
+#   debit  > 0 -> openingbalance = debit,  balancetype = DEBIT
+#   credit > 0 -> openingbalance = credit, balancetype = CREDIT
+#   both / negative values -> error
+#   amounts: Decimal, written as text with 2 decimals
+# Controls:
+#   sum(Debit) == sum(Credit); sums == TOTAL row; output net (Dr - Cr) == TB net
+
+decisions:                        # confirmed by user 2026-11-03
+  pl_ledgers: import_as_is        # Sales/Income/Purchase/Expense balances imported unchanged
+  use_tb_groups_for_annexure: no  # annexure classification stays name-rule based only

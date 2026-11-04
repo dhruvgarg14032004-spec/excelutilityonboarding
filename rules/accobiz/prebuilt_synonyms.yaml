@@ -1,0 +1,48 @@
+# Source ledger name -> Accobiz prebuilt ledger it duplicates.
+# Matching order:
+#   1. Normalized exact match against prebuilt_ledgers.yaml       -> SKIP (auto)
+#   2. Synonym match below (normalized)                            -> SKIP (auto)
+#   3. Fuzzy match (similarity >= 88) against prebuilt names       -> FLAG for user to confirm
+# Normalization: lowercase, "&" -> "and", drop "a/c", "ac", "account", "acct",
+# punctuation/brackets -> space, collapse spaces.
+# Synonyms here are software-independent; software-specific ones may also live in the profile.
+
+# Fuzzy guard: a fuzzy candidate is discarded if these "identity tokens" differ between
+# the two names (prevents TCS ~ TDS, 194C ~ 194Q, CGST ~ SGST false matches).
+fuzzy_guard_tokens: [tds, tcs, gst, cgst, sgst, igst, cess, input, payable, recoverable,
+                     reverse, "\\d+[a-z]*"]   # last = section numbers like 194q, 206c
+
+# PREBUILT BALANCE HANDLING (decision: option B)
+# A source ledger matched to a prebuilt is NOT created as a new ledger. Instead, if it has a
+# non-zero opening balance (from the Trial Balance), ONE row is written to the output with:
+#   name           = the EXACT Accobiz prebuilt name (e.g. "GST CGST", not "GST (CGST) A/c")
+#   openingbalance = net balance
+#   balancetype    = DEBIT / CREDIT
+#   all other columns blank  (Accobiz import updates the existing ledger's balance)
+# Zero-balance matches are omitted entirely.
+# When 2+ source ledgers map to the SAME prebuilt (e.g. "Sale Raw Material" and
+# "Sale (Raw Material)"), their balances are NETTED (Dr - Cr) into that single row.
+# The conversion report lists every source ledger merged into each prebuilt row.
+
+synonyms:
+  "Cash":                       ["cash in hand", "cash a c", "petty cash"]
+  "SALARIES":                   ["salary", "salary a c"]
+  "INTEREST TO OTHERS":         ["interest to other"]
+  "Depreciation":               ["depriciation"]
+  "GST CGST":                   ["gst cgst", "cgst", "cgst payable", "output cgst"]
+  "GST SGST":                   ["gst sgst", "sgst", "sgst payable", "output sgst"]
+  "GST IGST":                   ["gst igst", "igst", "igst payable", "output igst"]
+  "GST CGST Reverse Charge":    ["gst cgst reverse", "cgst reverse charge", "cgst rcm"]
+  "GST SGST Reverse Charge":    ["gst sgst reverse", "sgst reverse charge", "sgst rcm"]
+  "GST IGST Reverse Charge":    ["gst igst reverse", "igst reverse charge", "igst rcm"]
+  "GST CGST TDS Payable":       ["tds cgst payable"]
+  "GST SGST TDS Payable":       ["tds sgst payable"]
+  "GST IGST TDS Payable":       ["tds igst payable"]
+  "GST CGST TDS Recoverable":   ["tds cgst recoverable"]
+  "GST SGST TDS Recoverable":   ["tds sgst recoverable"]
+  "GST IGST TDS Recoverable":   ["tds igst recoverable"]
+  "TDS 194Q Payable":           ["tds 194q payable"]
+  "TDS 194Q Recoverable":       ["tds 194q recoverable"]
+  "Input CGST":                 ["cgst input", "input cgst"]
+  "Input SGST":                 ["sgst input", "input sgst"]
+  "Input IGST":                 ["igst input", "input igst"]

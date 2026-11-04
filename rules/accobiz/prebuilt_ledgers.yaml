@@ -1,0 +1,386 @@
+# Accobiz prebuilt ledgers - present in EVERY Accobiz company.
+# Source: templates/accobiz/prebuilt-ledgers.xlsx (exported 2026-11-03).
+# Any source ledger matching one of these is SKIPPED from the output (no duplicates).
+# Applies to all source softwares.
+prebuilt:
+- code: PL010
+  name: AUDIT FEES
+  type: EXPENSE
+- code: '1100'
+  name: Bank
+  type: ASSET
+- code: '5510'
+  name: Bank Charges
+  type: EXPENSE
+- code: PL017
+  name: BUILDING REPAIR
+  type: EXPENSE
+- code: '1000'
+  name: Cash
+  type: ASSET
+- code: '2130'
+  name: Cess Payable
+  type: LIABILITY
+- code: PL085
+  name: CLOSING STOCK - CONSUMABLES
+  type: EXPENSE
+- code: PL084
+  name: CLOSING STOCK - FINISHED GOODS
+  type: EXPENSE
+- code: PL082
+  name: CLOSING STOCK - RAW MATERIAL
+  type: EXPENSE
+- code: PL083
+  name: CLOSING STOCK - TRADED GOODS
+  type: EXPENSE
+- code: PL018
+  name: CONVEYANCE EXPENSES
+  type: EXPENSE
+- code: '5100'
+  name: Cost of Goods Sold
+  type: EXPENSE
+- code: '5600'
+  name: Depreciation
+  type: EXPENSE
+- code: PL014
+  name: DIESEL EXPENSES
+  type: EXPENSE
+- code: '5400'
+  name: Direct Expenses
+  type: EXPENSE
+- code: '5500'
+  name: Discount Allowed
+  type: EXPENSE
+- code: PL027
+  name: DISCOUNT PAID
+  type: EXPENSE
+- code: '4400'
+  name: Discount Received
+  type: INCOME
+- code: PL019
+  name: ELECTRICITY EXPENSES
+  type: EXPENSE
+- code: PL009
+  name: ENTERTAINMENT EXPENSES
+  type: EXPENSE
+- code: PL089
+  name: EPF
+  type: EXPENSE
+- code: PL090
+  name: EPF PAYABLE
+  type: EXPENSE
+- code: PL088
+  name: ESI
+  type: EXPENSE
+- code: PL087
+  name: ESI PAYABLE
+  type: EXPENSE
+- code: PL093
+  name: EXPENSES PAYABLE
+  type: EXPENSE
+- code: PL094
+  name: FEES & TAXES
+  type: EXPENSE
+- code: PL095
+  name: FEES & TAXES PAYABLE
+  type: EXPENSE
+- code: '2190'
+  name: Freight Payable
+  type: LIABILITY
+- code: '5420'
+  name: GP GST Expense
+  type: EXPENSE
+- code: '4110'
+  name: GP GST Income
+  type: INCOME
+- code: PL073
+  name: GST CASH LEDGER
+  type: ASSET
+- code: '2100'
+  name: GST CGST
+  type: LIABILITY
+- code: '2101'
+  name: GST CGST Reverse Charge
+  type: LIABILITY
+- code: '2160'
+  name: GST CGST TDS Payable
+  type: LIABILITY
+- code: '1320'
+  name: GST CGST TDS Recoverable
+  type: ASSET
+- code: '2120'
+  name: GST IGST
+  type: LIABILITY
+- code: '2121'
+  name: GST IGST Reverse Charge
+  type: LIABILITY
+- code: '2180'
+  name: GST IGST TDS Payable
+  type: LIABILITY
+- code: '1340'
+  name: GST IGST TDS Recoverable
+  type: ASSET
+- code: PL029
+  name: GST REVERSAL
+  type: EXPENSE
+- code: '2110'
+  name: GST SGST
+  type: LIABILITY
+- code: '2111'
+  name: GST SGST Reverse Charge
+  type: LIABILITY
+- code: '2170'
+  name: GST SGST TDS Payable
+  type: LIABILITY
+- code: '1330'
+  name: GST SGST TDS Recoverable
+  type: ASSET
+- code: '1530'
+  name: Input Cess
+  type: ASSET
+- code: '1500'
+  name: Input CGST
+  type: ASSET
+- code: '1520'
+  name: Input IGST
+  type: ASSET
+- code: '1510'
+  name: Input SGST
+  type: ASSET
+- code: PL025
+  name: INTEREST RECEIVED
+  type: EXPENSE
+- code: PL023
+  name: INTEREST RECEIVED FROM BANK
+  type: EXPENSE
+- code: PL024
+  name: INTEREST RECEIVED ON SECURITY DEPOSIT
+  type: EXPENSE
+- code: PL021
+  name: INTEREST TO BANK
+  type: EXPENSE
+- code: PL022
+  name: INTEREST TO OTHERS
+  type: EXPENSE
+- code: '1400'
+  name: Inventory
+  type: ASSET
+- code: '5110'
+  name: Inventory Shrinkage
+  type: EXPENSE
+- code: '4150'
+  name: Job Work Income
+  type: INCOME
+- code: PL011
+  name: LEGAL FEES
+  type: EXPENSE
+- code: '5520'
+  name: Loyalty Points Redeemed
+  type: EXPENSE
+- code: PL016
+  name: MACHINERY REPAIR
+  type: EXPENSE
+- code: '3900'
+  name: Opening Balances
+  type: EQUITY
+- code: PL081
+  name: OPENING STOCK - CONSUMABLES
+  type: EXPENSE
+- code: PL080
+  name: OPENING STOCK - FINISHED GOODS
+  type: EXPENSE
+- code: PL078
+  name: OPENING STOCK - RAW MATERIAL
+  type: EXPENSE
+- code: PL079
+  name: OPENING STOCK - TRADED GOODS
+  type: EXPENSE
+- code: '4300'
+  name: Other Charges Add
+  type: INCOME
+- code: '5300'
+  name: Other Charges Add (Purchase)
+  type: EXPENSE
+- code: '4310'
+  name: Other Charges Less
+  type: INCOME
+- code: '5310'
+  name: Other Charges Less (Purchase)
+  type: EXPENSE
+- code: '4100'
+  name: Other Income
+  type: INCOME
+- code: '5200'
+  name: Others (Purchase)
+  type: EXPENSE
+- code: '4200'
+  name: Others (Sales)
+  type: INCOME
+- code: '3000'
+  name: Owner Equity
+  type: EQUITY
+- code: PL013
+  name: PETROL EXPENSES
+  type: EXPENSE
+- code: PL096
+  name: PROVISION FOR INCOME TAX
+  type: EXPENSE
+- code: PL001
+  name: PURCHASE FINISHED GOODS
+  type: EXPENSE
+- code: PL003
+  name: PURCHASE RAW MATERIAL
+  type: EXPENSE
+- code: PL002
+  name: PURCHASE TRADED GOODS
+  type: EXPENSE
+- code: '5000'
+  name: Purchases
+  type: EXPENSE
+- code: PL008
+  name: RENT
+  type: EXPENSE
+- code: PL015
+  name: REPAIR & MAINTENANCE
+  type: EXPENSE
+- code: '4900'
+  name: Round Off
+  type: INCOME
+- code: PL007
+  name: SALARIES
+  type: EXPENSE
+- code: PL091
+  name: SALARIES PAYABLE
+  type: EXPENSE
+- code: PL005
+  name: SALE FINISHED GOODS
+  type: EXPENSE
+- code: PL004
+  name: SALE RAW MATERIAL
+  type: EXPENSE
+- code: PL006
+  name: SALE TRADED GOODS
+  type: EXPENSE
+- code: '4000'
+  name: Sales
+  type: INCOME
+- code: '2140'
+  name: TCS 206C Payable
+  type: LIABILITY
+- code: '1310'
+  name: TCS 206C Recoverable
+  type: ASSET
+- code: PL053
+  name: TCS ON ALCHOLIC LIQUOR-206-C
+  type: ASSET
+- code: PL054
+  name: TCS ON INDIAN MADE FOREIGN LIQUOR
+  type: ASSET
+- code: PL059
+  name: TCS ON SALE OF COAL, MINERAL AND LIGNITE IRON ORE
+  type: ASSET
+- code: PL060
+  name: TCS ON SALE OF MOTOR VEHICLE-RATE
+  type: ASSET
+- code: PL058
+  name: TCS ON SALE OF SCRAP
+  type: ASSET
+- code: PL057
+  name: TCS ON SALE OF TIMBER OBTAINED OTHER THAN FOREST PRODUCE
+  type: ASSET
+- code: PL056
+  name: TCS ON SALE OF TIMBER OR ANY FOREST PRODUCE-RATE
+  type: ASSET
+- code: PL055
+  name: TCS ON TENDU LEAVES
+  type: ASSET
+- code: '2150'
+  name: TDS 194Q Payable
+  type: LIABILITY
+- code: '1300'
+  name: TDS 194Q Recoverable
+  type: ASSET
+- code: PL041
+  name: TDS IN RESPECT OF INCOME FROM UNITS-194-K
+  type: ASSET
+- code: PL043
+  name: TDS IN RESPECT OF UNIT OF INVESTMENT FUNDS-194-LBB
+  type: ASSET
+- code: PL049
+  name: TDS ON BENEFOTS/PREQUISITES-194-R
+  type: ASSET
+- code: PL035
+  name: TDS ON COMMISION ON SALE OPF LOTTERY TICKETS-194-G
+  type: ASSET
+- code: PL036
+  name: TDS ON COMMISION OR BROKERAGE-194-H
+  type: ASSET
+- code: PL042
+  name: TDS ON COMPENSATION ON COMPULSORY ACQUISION OF IMMOVABLE PROPERTY-194-LA
+  type: ASSET
+- code: PL040
+  name: TDS ON FEES FOR TECHNICAL OR PROFESSIONAL SERVICES-194-J
+  type: ASSET
+- code: PL044
+  name: TDS ON INCOME FROM SECURITIZATION FUND-194LBC
+  type: ASSET
+- code: PL030
+  name: TDS ON INSURANCE COMMISSION-194-D
+  type: ASSET
+- code: PL045
+  name: TDS ON INTEREST ON BONDS/GOVET SECURITIES-194-LD
+  type: ASSET
+- code: PL039
+  name: TDS ON JOINT DEVELOPMENT AGREEMENT-194-IC
+  type: ASSET
+- code: PL033
+  name: TDS ON NATIONAL SAVING SCHEMES-194-EE
+  type: ASSET
+- code: PL048
+  name: TDS ON PAYMENT BY E-COMMERCE OPERATORS-194-O
+  type: ASSET
+- code: PL031
+  name: TDS ON PAYMENT LIFE INSURANCE POLICY-194-DA
+  type: ASSET
+- code: PL051
+  name: TDS ON PAYMENT OF REMUNEARTION/INTEREST TO PARTNERS-194-T
+  type: ASSET
+- code: PL034
+  name: TDS ON PAYMENT OF REPURCHASE OF UNITS BY MUTUAL FUNDS OR UTI-194-F
+  type: ASSET
+- code: PL050
+  name: TDS ON PAYMENT ON DIGITAL VIRTUAL ASSETS-194-S
+  type: ASSET
+- code: PL032
+  name: TDS ON PAYMENT TO NON-RESIDENT SPORTSMAN OR SPORT ASSOCIATIONS-194-E
+  type: ASSET
+- code: PL047
+  name: TDS ON PAYMENTS IN CASH-194-N
+  type: ASSET
+- code: PL038
+  name: TDS ON RENT -194-IB
+  type: ASSET
+- code: PL037
+  name: TDS ON RENT-194-I
+  type: ASSET
+- code: PL075
+  name: TDS PAYABLE
+  type: ASSET
+- code: PL074
+  name: TDS RECOVERABLE
+  type: ASSET
+- code: PL052
+  name: TDS UNDER SCETION-195-NON RESIDENT
+  type: ASSET
+- code: PL046
+  name: TDS UNDER SECTION 194-M
+  type: ASSET
+- code: PL012
+  name: TRAVELLING EXPENSES
+  type: EXPENSE
+- code: PL086
+  name: WAGES
+  type: EXPENSE
+- code: PL092
+  name: WAGES PAYABLE
+  type: EXPENSE

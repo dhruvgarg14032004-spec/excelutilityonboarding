@@ -1,0 +1,80 @@
+# Shakun → Accobiz : Ledger Accounts
+# Source of truth: MATCHING.xlsx (Sheet1), confirmed by user.
+
+id: shakun.ledger.default
+software: Shakun
+data_type: ledger
+variant: default
+target: accobiz.ledger            # templates/accobiz/ledger-accounts.xlsx
+
+layout:
+  sheet: MASTER
+  header_row: 6                   # rows 1-5 = company name/address + report title
+  data_start_row: 7
+  match_by: position              # Shakun format is fixed; several columns have no header
+  stop_at_blank_rows: 3           # row count is variable (50 - 5000+); never hard-code a range
+
+fingerprint:                      # used to confirm the upload is a Shakun ledger export
+  title_contains: "LEDGER ACCOUNT ADDRESS LIST"
+  headers: { A: "A/c", B: "Head of Account", E: "City", H: "GST #", K: "PAN" }
+
+columns:                          # Shakun column → Accobiz field
+  A: { header: "A/c",             to: code,      transform: [int_to_text] }      # 100803.0 → "100803"
+  B: { header: "Head of Account", to: name,      transform: [] }                 # copied exactly as-is
+  C: { header: "Address",         to: address,   join_order: 1 }
+  D: { header: "Address",         to: address,   join_order: 2 }                 # C + D joined
+  E: { header: "City",            to: city,      transform: [trim] }
+  F: { header: "Phone",           to: contact,   transform: [int_to_text] }
+  G: { header: "Agent",           to: agent }
+  H: { header: "GST #",           to: gstin,     transform: [upper, trim] }
+  K: { header: "PAN",             to: pan,       transform: [upper, trim] }
+  L: { header: "Bank A/c",        to: accountno, transform: [int_to_text] }      # no scientific notation
+  O: { header: "",                to: state,     transform: [state_normalize] }  # PUNJAB → Punjab, GUJRAT → Gujarat
+  R: { header: "",                to: pin,       transform: [int_to_text] }      # 147301.0 → "147301"
+  S: { header: "",                to: district,  transform: [underscore_to_space] }
+
+join:
+  address: { separator: ", ", skip_blank: true }
+
+unmapped:                         # present in Shakun, no Accobiz target → dropped
+  I: "Contact Person"             # dropped (user decision)
+  J: "Area"                       # dropped (user decision)
+  M: ""
+  N: ""
+  P: ""                           # e.g. "Not Covered in MSMED"
+  Q: ""
+
+defaults:                         # applied to every converted (non-prebuilt) ledger
+  country: India
+  # cashbank: YES/NO comes from rules/accobiz/ledger_annexure.yaml
+
+not_in_source:                    # Accobiz fields Shakun does not provide → left BLANK (user decision)
+  - type
+  - udyam
+  - openingbalance
+  - balancetype
+  - annexuredr
+  - annexurecr
+  - cashbank
+  - whatsapp
+  - email
+  - qtydetails
+  - bankname
+  - ifsc
+  - accounttype
+  - tdsno
+  - gsttdsno
+  - tdsonsales
+  - composition
+  - nri
+  - msme
+  - c27
+  - areacode
+  - aotype
+  - rangecode
+  - aono
+  - ward
+  - lastassessed
+
+validation:
+  duplicate_name: error           # e.g. "Cash Receipt No." x2 -> reported, not auto-dropped

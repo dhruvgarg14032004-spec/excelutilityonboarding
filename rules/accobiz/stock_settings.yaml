@@ -1,0 +1,20 @@
+unit: MTS
+purchaseaccount: PURCHASE TRADED GOODS
+salesaccount: SALE TRADED GOODS
+gst_tds:
+  hsn_prefixes:
+  - '7204'
+  - '7404'
+  - '7503'
+  - '7602'
+  - '7802'
+  - '7902'
+  - '8002'
+  - '8104'
+  - '8108'
+  - '8112'
+  rate: '2'
+tcs:
+  name_keywords:
+  - scrap
+  rate: '2'

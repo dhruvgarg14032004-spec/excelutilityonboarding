@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accobiz Migration Utility</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">A</div>
+    <div>
+      <div class="brand-name">Accobiz</div>
+      <div class="brand-sub">Data Migration Utility</div>
+    </div>
+  </div>
+  <button id="settingsBtn" class="ghost" onclick="openSettings()">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    Settings
+  </button>
+</header>
+
+<nav id="steps" class="stepper">
+  <button data-step="1"><span class="n">1</span><span class="l">Data type</span></button>
+  <button data-step="2"><span class="n">2</span><span class="l">Software</span></button>
+  <button data-step="3"><span class="n">3</span><span class="l">Upload</span></button>
+  <button data-step="4"><span class="n">4</span><span class="l">Review mapping</span></button>
+  <button data-step="5"><span class="n">5</span><span class="l">Preview &amp; validate</span></button>
+  <button data-step="6"><span class="n">6</span><span class="l">Download</span></button>
+</nav>
+
+<main>
+  <section data-step="1">
+    <div class="head"><h2>What would you like to migrate?</h2>
+      <p>Choose the master data exported from your previous accounting software.</p></div>
+    <div class="cards">
+      <label class="card"><input type="radio" name="dtype" value="ledger" checked>
+        <div class="card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M8 7h8M8 11h6"/></svg></div>
+        <b>Ledger Accounts</b><small>Parties, banks, taxes, expenses and opening balances from the trial balance</small></label>
+      <label class="card"><input type="radio" name="dtype" value="stock">
+        <div class="card-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/></svg></div>
+        <b>Stock Accounts</b><small>Items with HSN, GST rate, GST TDS / TCS and ledger links</small></label>
+    </div>
+    <div class="actions"><button class="primary" onclick="chooseType()">Continue</button></div>
+  </section>
+
+  <section data-step="2">
+    <div class="head"><h2>Source accounting software</h2>
+      <p>The utility understands each software's fixed export format.</p></div>
+    <label class="field">Software<select id="software"></select></label>
+    <div class="actions"><button onclick="go(1)">Back</button><button class="primary" onclick="go(3)">Continue</button></div>
+  </section>
+
+  <section data-step="3">
+    <div class="head"><h2>Upload exported files</h2>
+      <p>Files are only read — your originals are never changed.</p></div>
+    <div class="uploads" data-for="ledger">
+      <label class="drop"><input type="file" id="ledgerFile" accept=".xls,.xlsx,.xlsb">
+        <div class="drop-icon">⇪</div>
+        <b>Ledger list <span class="tag req">Required</span></b>
+        <small>e.g. Shakun "Ledger Account Address List"</small>
+        <span class="fname">Click to choose an Excel file</span></label>
+      <label class="drop"><input type="file" id="tbFile" accept=".xls,.xlsx,.xlsb">
+        <div class="drop-icon">⇪</div>
+        <b>Trial balance <span class="tag">Optional</span></b>
+        <small>Provides opening balance and Dr / Cr</small>
+        <span class="fname">Click to choose an Excel file</span></label>
+    </div>
+    <div class="uploads" data-for="stock">
+      <label class="drop"><input type="file" id="stockFile" accept=".xls,.xlsx,.xlsb">
+        <div class="drop-icon">⇪</div>
+        <b>Stock item list <span class="tag req">Required</span></b>
+        <small>e.g. Shakun "Stock Master Printing"</small>
+        <span class="fname">Click to choose an Excel file</span></label>
+    </div>
+    <div id="uploadError" class="alert error" hidden></div>
+    <div class="actions"><button onclick="go(2)">Back</button>
+      <button class="primary" id="convertBtn" onclick="convert()">Convert</button></div>
+  </section>
+
+  <section data-step="4">
+    <div class="head"><h2>Review mapping</h2>
+      <p>How each Accobiz column is filled. Rules and classifications can be adjusted per row in the next step.</p></div>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Accobiz columns</h3>
+        <div class="tablewrap short"><table id="mappingTable" class="tbl"><thead><tr><th>Accobiz column</th><th>Filled from</th></tr></thead><tbody></tbody></table></div>
+        <p class="muted small" id="droppedCols"></p>
+      </div>
+      <div class="panel" id="mappingSide"></div>
+    </div>
+    <div class="actions"><button onclick="go(3)">Back</button><button class="primary" onclick="go(5)">Continue</button></div>
+  </section>
+
+  <section data-step="5">
+    <div class="head"><h2>Preview &amp; validate</h2>
+      <p>Rows with errors must be fixed or excluded before download.</p></div>
+    <div id="stats" class="stats"></div>
+    <div id="datasetIssues"></div>
+    <div id="aiPanel"></div>
+    <div class="toolbar">
+      <select id="filter" onchange="loadRows(1)"></select>
+      <input id="search" placeholder="Search by name…" oninput="debounceLoad()">
+      <span id="pager"></span>
+    </div>
+    <div class="tablewrap"><table id="rows" class="tbl rows"><thead></thead><tbody></tbody></table></div>
+    <div class="actions"><button onclick="go(4)">Back</button><button class="primary" onclick="go(6)">Continue</button></div>
+  </section>
+
+  <section data-step="6">
+    <div class="head"><h2>Download</h2>
+      <p>Import the file into Accobiz. Keep the report for your records.</p></div>
+    <div id="finalStats" class="stats"></div>
+    <div id="downloadBlock"></div>
+    <div class="actions"><button onclick="go(5)">Back</button>
+      <button onclick="location.reload()">Start a new conversion</button></div>
+  </section>
+
+  <section data-step="settings">
+    <div class="head"><h2>Settings · Stock rules</h2>
+      <p>Applied to every stock conversion. Update when rates or rules change.</p></div>
+    <div class="form">
+      <div class="row3">
+        <label class="field">Unit for all items<select id="setUnit"></select></label>
+        <label class="field">Purchase account<select id="setPurchase"></select></label>
+        <label class="field">Sales account<select id="setSales"></select></label>
+      </div>
+      <fieldset><legend>GST TDS</legend>
+        <label class="field">HSN codes <small>comma separated · matched on the start of the item's HSN</small>
+          <textarea id="setTdsHsn" rows="2"></textarea></label>
+        <label class="field narrow">Rate %<input id="setTdsRate" type="number" min="0" max="100" step="0.01"></label>
+      </fieldset>
+      <fieldset><legend>TCS</legend>
+        <label class="field">Words in item description <small>comma separated</small>
+          <input id="setTcsWords" type="text"></label>
+        <label class="field narrow">Rate %<input id="setTcsRate" type="number" min="0" max="100" step="0.01"></label>
+      </fieldset>
+    </div>
+    <div id="settingsMsg"></div>
+    <div class="actions"><button onclick="closeSettings()">Close</button>
+      <button class="primary" onclick="saveSettings()">Save settings</button></div>
+  </section>
+</main>
+<div id="toast" hidden></div>
+<footer>Accobiz Data Migration Utility · files are processed locally on this computer</footer>
+<script src="app.js"></script>
+</body>
+</html>

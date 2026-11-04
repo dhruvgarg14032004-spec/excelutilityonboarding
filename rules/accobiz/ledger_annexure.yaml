@@ -1,0 +1,83 @@
+# Accobiz ledger classification -> annexuredr / annexurecr
+# Software-independent: applies to every source software.
+# Every ledger gets BOTH columns filled (Dr head + Cr head of the same category).
+# Values must be EXACT strings from the Accobiz Options sheet (including typos/double spaces).
+# Rules are evaluated top to bottom; first match wins.
+# Keyword matching: case-insensitive, whole words (so "tds" won't match "Studs").
+# Names are normalized first: punctuation -> space, "&" -> "and", dotted/spaced
+# acronyms collapsed ("T.D.S" / "T D S" -> "tds").
+# A rule is skipped for a ledger if any exclude_keyword matches.
+
+categories:
+
+  - id: tax
+    label: Taxation (GST / TDS / TCS)
+    annexuredr: "BALANCES WITH REVENUE AUTHORITIES"
+    annexurecr: "BALANCES PAYABLE TO REVENUE AUTHORITIES"
+    match:
+      name_keywords: [gst, cgst, sgst, igst, utgst, tds, tcs, cess, "income tax",
+                      "input tax", "output tax", tax, taxes, duties, vat,
+                      "service tax", excise, "advance tax", "self assessment"]
+      exclude_keywords: ["tax free", taxfree, "fees and taxes", "before vat", "after vat"]
+
+  - id: cash
+    label: Cash in hand
+    annexuredr: "CASH IN HAND"
+    annexurecr: "OTHER LIABILITIES"
+    set: { cashbank: "YES" }
+    match:
+      name_keywords: [cash, "petty cash", "cash in hand"]
+      exclude_keywords: [receipt, deposited, credit, discount, "cash ledger"]
+
+  - id: bank
+    label: Bank accounts
+    annexuredr: "BALANCES  WITH SCHEDULED BANKS"     # double space is in Accobiz's dropdown
+    annexurecr: "OTHER LIABILITIES"
+    set: { cashbank: "YES" }
+    match:
+      name_keywords: [bank, "c a", "cc a c", "od a c", "current acct", "current account",
+                      "savings", "saving a c", "punjab national", pnb, sbi, "state bank",
+                      hdfc, icici, axis, kotak, "union bank", canara, "bank of baroda",
+                      "bank of india", vijaya, obc, idbi, "yes bank", indusind, "federal bank"]
+      exclude_keywords: [charges, interest, loan, "term loan", commission, fdr, fd,
+                         deposit, guarantee, "cash deposited"]
+
+  - id: party
+    label: Trade party (has GSTIN)
+    annexuredr: "SUNDRY DEBTORS/TRADE REVEIVABLES"
+    annexurecr: "SUNDRY CREDITORS/TRADE PAYABLES"
+    match:
+      has_valid_gstin: true
+
+  - id: expense
+    label: Expenses / Expenses payable
+    annexuredr: "OTHER EXPENSES"
+    annexurecr: "EXPENSES PAYABLE"
+    match:
+      name_keywords: [expense, expenses, exp, exps, payable, charges, rent, salary, salaries,
+                      wages, bonus, electricity, power, telephone, mobile, internet,
+                      freight, cartage, carriage, transport, loading, unloading, loding,
+                      repair, repairs, maintenance, printing, stationery, stationary, postage,
+                      courier, conveyance, travel, travelling, fuel, petrol, diesel,
+                      insurance, insurence, fee, fees, audit, legal, professional, consultancy,
+                      advertisement, advertising, commission, brokerage, donation,
+                      entertainment, refreshment, "staff welfare", misc, mics,
+                      miscellaneous, labour, packing, hire, subscription,
+                      depreciation, depriciation, "interest paid", "interest to", penalty,
+                      "discount paid", epf, esi, "provident fund", compensation,
+                      amc, welfare, walfare, "fees and taxes", "round off"]
+      exclude_keywords: [received, receivable, prepaid, recoverable, equipment, equipments,
+                         co, ltd, limited, corporation, pvt, regd]
+
+  - id: other
+    label: Everything else (default)
+    annexuredr: "OTHER ASSETS"
+    annexurecr: "OTHER LIABILITIES"
+    match: default
+
+# Classification method (per ledger):
+#   1. Rule engine above -> confidence "rule" (high).
+#   2. If rule result is "other" and AI is enabled -> AI reviews the name and may suggest
+#      tax / party / expense with a reason. Shown as "AI suggestion" for user to accept.
+#   (cashbank = "YES" only for cash/bank categories; "NO" for all others)
+#   3. User can override any row in the Review step; overrides are remembered per ledger name.
