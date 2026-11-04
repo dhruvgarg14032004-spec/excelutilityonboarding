@@ -327,7 +327,11 @@ def put_stock_settings(body: dict):
         clean = validate_settings(body)
     except (ValueError, KeyError, TypeError) as e:
         raise HTTPException(400, f"Invalid settings: {e}")
-    save_stock_settings(clean)
+    try:
+        save_stock_settings(clean)
+    except OSError:
+        raise HTTPException(503, "Settings cannot be saved on this server (read-only disk). "
+                                 "Edit rules/accobiz/stock_settings.yaml in the repository and redeploy.")
     return {"settings": clean}
 
 

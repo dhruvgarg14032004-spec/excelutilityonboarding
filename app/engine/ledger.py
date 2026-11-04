@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 
 from . import ai_review, classifier, prebuilt
+from .prebuilt import PrebuiltMatch
 from .config import ledger_template, profile
 from .normalize import GSTIN_RE, PAN_RE, PIN_RE, is_blank, money_text, to_decimal, to_text
 from .reader import FileStructureError, cell, check_headers, data_rows, read_sheet
@@ -32,7 +33,7 @@ class LedgerRecord:
     credit: Decimal = ZERO
     category: str = "other"
     reason: str = ""
-    prebuilt: prebuilt.PrebuiltMatch | None = None
+    prebuilt: PrebuiltMatch | None = None
     prebuilt_decision: str = "new"     # merge | new
     include: bool = True
     static_issues: list[Issue] = field(default_factory=list)   # from transforms

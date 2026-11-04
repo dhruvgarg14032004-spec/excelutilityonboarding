@@ -1,0 +1,45 @@
+ACCOBIZ EXCEL CONVERSION UTILITY - ENVIRONMENT VARIABLES
+=======================================================
+
+Only ONE variable is used, and it is OPTIONAL.
+
+-------------------------------------------------------
+ANTHROPIC_API_KEY        (optional)
+-------------------------------------------------------
+  Purpose : Enables the "Review with AI" button for ledgers in the
+            "Everything else" category.
+  Value   : Your Anthropic API key, from https://console.anthropic.com
+            (starts with  sk-ant-...)
+  If not set: the whole utility still works (ledger + stock conversion,
+            settings, downloads). Only the AI review panel shows
+            "AI review is not set up".
+
+-------------------------------------------------------
+HOW TO SET IT
+-------------------------------------------------------
+Local computer:
+  1. Copy .env.example to a new file named .env (same folder).
+  2. Put the key on this line:
+        ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxx
+  3. Restart the utility (start.bat).
+
+Hosting platform (Render, Railway, Azure, AWS, a VPS, etc.):
+  - Add ANTHROPIC_API_KEY in the platform's "Environment variables" /
+    "Secrets" settings. Do NOT upload a .env file to the server or GitHub.
+
+-------------------------------------------------------
+NOT ENVIRONMENT VARIABLES (good to know when deploying)
+-------------------------------------------------------
+  - Port: set on the start command, e.g.
+        python -m uvicorn app.main:app --host 0.0.0.0 --port 8765
+    (use --host 0.0.0.0 on a server so it is reachable from outside;
+     many platforms give the port as $PORT:  --port $PORT)
+  - Stock rates / HSN list / unit: edited in the app's Settings screen,
+    saved to rules/accobiz/stock_settings.yaml (needs a writable disk;
+    on platforms with a temporary disk, changes reset on redeploy).
+
+-------------------------------------------------------
+SECURITY
+-------------------------------------------------------
+  - .env is listed in .gitignore, so it is never committed.
+  - Never paste the API key into code, README or chat messages.
