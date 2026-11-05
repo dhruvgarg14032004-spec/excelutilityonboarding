@@ -1,0 +1,4 @@
+tests/
+.claude/
+*.md
+start.bat

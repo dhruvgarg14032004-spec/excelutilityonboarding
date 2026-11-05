@@ -1,0 +1,12 @@
+{
+  "builds": [
+    {
+      "src": "index.py",
+      "use": "@vercel/python",
+      "config": { "includeFiles": "{app,profiles,rules,templates}/**" }
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "index.py" }
+  ]
+}

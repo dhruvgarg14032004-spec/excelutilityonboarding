@@ -1,5 +1,4 @@
 """Accobiz Excel Conversion Utility - API + static UI."""
-import time
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
@@ -18,24 +17,19 @@ from .engine.config import (ledger_template, list_softwares, save_stock_settings
 from .engine.ledger import LedgerJob
 from .engine.reader import FileStructureError
 from .engine.stock import StockJob, validate_settings
+from .engine.store import store
 from .engine.writer import write_accobiz, write_report, write_stock_report
 
 MAX_UPLOAD = 25 * 1024 * 1024
-JOB_TTL = 4 * 3600
 XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 app = FastAPI(title="Accobiz Excel Conversion Utility")
-JOBS: dict[str, tuple[float, LedgerJob | StockJob]] = {}
 
 
 def _job(job_id: str, kind=LedgerJob):
-    now = time.time()
-    for k in [k for k, (t, _) in JOBS.items() if now - t > JOB_TTL]:
-        del JOBS[k]
-    if job_id not in JOBS:
+    job = store().get_job(job_id)
+    if job is None:
         raise HTTPException(404, "Conversion session expired - please upload again.")
-    JOBS[job_id] = (now, JOBS[job_id][1])
-    job = JOBS[job_id][1]
     if not isinstance(job, kind):
         raise HTTPException(404, "No such conversion.")
     return job
@@ -73,7 +67,7 @@ async def create_ledger_job(software: str = Form(...), ledger_file: UploadFile =
         job = LedgerJob(software).load(ledger, tb)
     except FileStructureError as e:
         raise HTTPException(422, str(e))
-    JOBS[job.id] = (time.time(), job)
+    store().put_job(job)
     return job.summary()
 
 
@@ -149,6 +143,7 @@ def override(job_id: str, idx: int, body: Override):
         job.set_override(idx, **body.model_dump(exclude_none=True))
     except (ValueError, StopIteration) as e:
         raise HTTPException(400, str(e) or "Invalid value.")
+    store().put_job(job)
     return {"record": job.record_view(idx), "summary": job.summary()}
 
 
@@ -183,6 +178,7 @@ def ai_review_run(job_id: str):
         raise HTTPException(429, "AI service is busy (rate limited) - try again in a minute.")
     except (anthropic.APIConnectionError, anthropic.APIStatusError) as e:
         raise HTTPException(502, f"AI service error - try again later ({type(e).__name__}).")
+    store().put_job(job)
     return {"reviewed": n, "summary": job.summary()}
 
 
@@ -197,6 +193,7 @@ def ai_accept(job_id: str, body: AiAccept):
     if body.min_confidence not in (None, "low", "medium", "high"):
         raise HTTPException(400, "Invalid confidence.")
     n = job.accept_ai(body.indexes, body.min_confidence)
+    store().put_job(job)
     return {"accepted": n, "summary": job.summary()}
 
 
@@ -206,6 +203,7 @@ def ai_dismiss(job_id: str, idx: int):
     if not 0 <= idx < len(job.records):
         raise HTTPException(404, "No such row.")
     job.dismiss_ai(idx)
+    store().put_job(job)
     return {"record": job.record_view(idx), "summary": job.summary()}
 
 
@@ -219,7 +217,7 @@ async def create_stock_job(software: str = Form(...), stock_file: UploadFile = F
         job = StockJob(software).load(data)
     except FileStructureError as e:
         raise HTTPException(422, str(e))
-    JOBS[job.id] = (time.time(), job)
+    store().put_job(job)
     return job.summary()
 
 
@@ -284,6 +282,7 @@ def stock_override(job_id: str, idx: int, body: StockOverride):
         job.set_override(idx, **body.model_dump(exclude_none=True))
     except ValueError as e:
         raise HTTPException(400, str(e))
+    store().put_job(job)
     return {"record": job.record_view(idx), "summary": job.summary()}
 
 
@@ -293,6 +292,7 @@ def stock_reapply(job_id: str):
     job = _job(job_id, StockJob)
     job.settings = validate_settings(stock_settings())
     job.apply_rules()
+    store().put_job(job)
     return job.summary()
 
 
@@ -330,8 +330,8 @@ def put_stock_settings(body: dict):
     try:
         save_stock_settings(clean)
     except OSError:
-        raise HTTPException(503, "Settings cannot be saved on this server (read-only disk). "
-                                 "Edit rules/accobiz/stock_settings.yaml in the repository and redeploy.")
+        raise HTTPException(503, "Settings cannot be saved on this server (read-only disk). Connect a Redis database (REDIS_URL), or "
+                                 "edit rules/accobiz/stock_settings.yaml in the repository and redeploy.")
     return {"settings": clean}
 
 

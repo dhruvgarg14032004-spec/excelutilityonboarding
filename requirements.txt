@@ -7,3 +7,4 @@ pyyaml
 rapidfuzz
 anthropic
 python-dotenv
+redis

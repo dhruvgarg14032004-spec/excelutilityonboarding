@@ -1,45 +1,47 @@
 ACCOBIZ EXCEL CONVERSION UTILITY - ENVIRONMENT VARIABLES
 =======================================================
 
-Only ONE variable is used, and it is OPTIONAL.
+-------------------------------------------------------
+1. REDIS_URL            (REQUIRED on Vercel, optional elsewhere)
+-------------------------------------------------------
+  Purpose : Database for open conversions and saved Settings.
+            Vercel runs the app as many short-lived instances, so a conversion
+            must be stored in a shared database, not in memory.
+  Value   : A Redis connection URL, e.g.
+            rediss://default:xxxxxxxx@your-db.upstash.io:6379
+  How to get it on Vercel:
+            Project -> Storage -> Create Database -> Redis (Upstash, from the
+            Marketplace) -> Connect to project. Vercel adds REDIS_URL (or KV_URL;
+            both names are accepted) automatically. Redeploy afterwards.
+  If not set: conversions are kept in memory and Settings in
+            rules/accobiz/stock_settings.yaml - fine on your own PC or a single
+            always-on server, but on Vercel you will get
+            "Conversion session expired" errors and Settings cannot be saved.
 
 -------------------------------------------------------
-ANTHROPIC_API_KEY        (optional)
+2. ANTHROPIC_API_KEY    (optional)
 -------------------------------------------------------
-  Purpose : Enables the "Review with AI" button for ledgers in the
-            "Everything else" category.
-  Value   : Your Anthropic API key, from https://console.anthropic.com
+  Purpose : Enables "Review with AI" for ledgers in "Everything else".
+  Value   : Your Anthropic API key from https://console.anthropic.com
             (starts with  sk-ant-...)
-  If not set: the whole utility still works (ledger + stock conversion,
-            settings, downloads). Only the AI review panel shows
-            "AI review is not set up".
+  If not set: everything else works; the AI panel says "not set up".
 
 -------------------------------------------------------
-HOW TO SET IT
+HOW TO SET THEM
 -------------------------------------------------------
-Local computer:
-  1. Copy .env.example to a new file named .env (same folder).
-  2. Put the key on this line:
-        ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxx
-  3. Restart the utility (start.bat).
-
-Hosting platform (Render, Railway, Azure, AWS, a VPS, etc.):
-  - Add ANTHROPIC_API_KEY in the platform's "Environment variables" /
-    "Secrets" settings. Do NOT upload a .env file to the server or GitHub.
+Vercel  : Project -> Settings -> Environment Variables (REDIS_URL is added for
+          you when you connect the Redis database). Redeploy after changes.
+Local PC: copy .env.example to .env and fill in the values, then restart
+          start.bat. Never commit .env (it is in .gitignore).
 
 -------------------------------------------------------
-NOT ENVIRONMENT VARIABLES (good to know when deploying)
+GOOD TO KNOW ON VERCEL
 -------------------------------------------------------
-  - Port: set on the start command, e.g.
-        python -m uvicorn app.main:app --host 0.0.0.0 --port 8765
-    (use --host 0.0.0.0 on a server so it is reachable from outside;
-     many platforms give the port as $PORT:  --port $PORT)
-  - Stock rates / HSN list / unit: edited in the app's Settings screen,
-    saved to rules/accobiz/stock_settings.yaml (needs a writable disk;
-    on platforms with a temporary disk, changes reset on redeploy).
-
--------------------------------------------------------
-SECURITY
--------------------------------------------------------
-  - .env is listed in .gitignore, so it is never committed.
-  - Never paste the API key into code, README or chat messages.
+  - Upload limit: Vercel accepts request bodies up to about 4.5 MB per upload.
+    Normal ledger / stock exports are far smaller.
+  - Conversions are kept in Redis for 4 hours after the last action, then expire.
+  - Default Settings (rates, HSN list, unit) come from
+    rules/accobiz/stock_settings.yaml; once someone saves Settings in the app,
+    the saved copy in Redis is used instead.
+  - AI review can take up to about a minute for large files; keep the function
+    timeout (Project -> Settings -> Functions -> Max Duration) at 60s or more.

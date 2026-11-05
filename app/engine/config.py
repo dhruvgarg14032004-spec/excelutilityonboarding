@@ -58,9 +58,14 @@ STOCK_SETTINGS = RULES / "accobiz" / "stock_settings.yaml"
 
 
 def stock_settings() -> dict:
-    return load_yaml(STOCK_SETTINGS)
+    """Saved settings from the database (if configured), else the YAML defaults in the repo."""
+    from .store import store
+    return store().get_settings("stock") or load_yaml(STOCK_SETTINGS)
 
 
 def save_stock_settings(data: dict):
+    from .store import store
+    if store().put_settings("stock", data):
+        return
     with open(STOCK_SETTINGS, "w", encoding="utf-8") as f:
         yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
